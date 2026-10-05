@@ -11,7 +11,8 @@
     "common.MixinRevivalLeaf",
     "common.MixinAddonEventHandler",
     "common.MixinIchorBottle",
-    "common.MixinVoidTome"
+    "common.MixinVoidTome",
+    "common.MixinAbstractBrewingRecipe"
   ],
   "client": [
     "client.MixinMerchantOffer",
