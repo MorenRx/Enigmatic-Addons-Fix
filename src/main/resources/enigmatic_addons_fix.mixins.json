@@ -1,0 +1,27 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "top.morenrx.enigmatic_addons_fix.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "enigmatic_addons_fix.refmap.json",
+  "mixins": [
+    "common.MixinAntiqueBagContainerMenu",
+    "common.MixinAntiqueBagCapabilityWrapper",
+    "common.MixinArtificialFlower",
+    "common.MixinRevivalLeaf",
+    "common.MixinAddonEventHandler",
+    "common.MixinIchorBottle",
+    "common.MixinVoidTome"
+  ],
+  "client": [
+    "client.MixinMerchantOffer",
+    "client.MixinIchorBottleTooltip",
+    "client.MixinVoidTomeTooltip"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}

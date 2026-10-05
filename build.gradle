@@ -1,0 +1,133 @@
+plugins {
+    id 'idea'
+    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+    id 'org.spongepowered.mixin' version '0.7.+'
+}
+
+dependencies {
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+
+    // JEI
+    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
+    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
+    runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
+
+    // Caelus API
+    implementation modrinth("caelus:3.2.0+1.20.1")
+    // Curios API
+    implementation modrinth("curios:5.14.1+1.20.1")
+
+    // 神秘遗物拓展
+    implementation modrinth("enigmatic-addons:1.2.6")
+    // 神秘遗物
+    implementation modrinth("enigmatic-legacy:2.30.1")
+    // 帕秋莉手册
+    runtimeOnly modrinth("patchouli:1.20.1-85-forge")
+
+    // 测试用
+    runtimeOnly modrinth("embeddium:0.3.31+mc1.20.1")
+    runtimeOnly modrinth("ferrite-core:6.0.1")
+    runtimeOnly modrinth("appleskin:2.5.1+mc1.20.1")
+    runtimeOnly modrinth("ibe-editor:2.2.8+1.20-forge")
+    runtimeOnly modrinth("mouse-tweaks:1.20.1-2.25.1-forge")
+    runtimeOnly modrinth("justenoughcharacters:4.6.11")
+}
+
+repositories {
+    maven {
+        name = "LocalRepo"
+        url = layout.projectDirectory.dir(".local_repo")
+    }
+    maven {
+        name = "ModMaven"
+        url = "https://modmaven.dev"
+    }
+    maven {
+        name = "Modrinth"
+        url = "https://api.modrinth.com/maven"
+        content {
+            includeGroup "maven.modrinth"
+        }
+    }
+}
+
+mixin {
+    add sourceSets.main, "${mod_id}.refmap.json"
+    config "${mod_id}.mixins.json"
+}
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+
+group = mod_group_id
+version = mod_version
+base.archivesName = archives_name + "-${minecraft_version}"
+
+processResources {
+    var replaceProperties = [
+            minecraft_version               : minecraft_version,
+            minecraft_version_range         : minecraft_version_range,
+            forge_version                   : forge_version,
+            forge_version_range             : forge_version_range,
+            loader_version_range            : loader_version_range,
+            mod_id                          : mod_id,
+            mod_name                        : mod_name,
+            mod_license                     : mod_license,
+            mod_version                     : mod_version,
+            mod_authors                     : mod_authors,
+            mod_description                 : mod_description,
+            enigmatic_addons_version_range  : enigmatic_addons_version_range
+    ]
+
+    inputs.properties replaceProperties
+
+    filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) {
+        expand replaceProperties + [project: project]
+    }
+}
+
+minecraft {
+    mappings channel: mapping_channel, version: mapping_version
+    copyIdeResources = true
+
+    runs {
+        configureEach {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            mods {
+                "${mod_id}" {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        client {
+            property 'forge.enabledGameTestNamespaces', mod_id
+        }
+
+        server {
+            property 'forge.enabledGameTestNamespaces', mod_id
+            args '--nogui'
+        }
+
+        gameTestServer {
+            property 'forge.enabledGameTestNamespaces', mod_id
+        }
+
+        data {
+            workingDirectory project.file('run-data')
+            args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+        }
+    }
+}
+
+def modrinth(String notation) {
+    return fg.deobf("maven.modrinth:${notation}-${mod_loader},${minecraft_version}")
+}
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
