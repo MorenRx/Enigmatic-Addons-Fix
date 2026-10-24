@@ -19,8 +19,7 @@ dependencies {
     implementation modrinth("curios:5.14.1+1.20.1")
 
     // 神秘遗物拓展
-//    implementation modrinth("enigmatic-addons:1.2.6")
-    implementation fg.deobf("curse.maven:enigmatic-addons-1030121:9222639")
+    implementation modrinth("enigmatic-addons:1.2.7")
     // 神秘遗物
     implementation modrinth("enigmatic-legacy:2.30.1")
     // 帕秋莉手册

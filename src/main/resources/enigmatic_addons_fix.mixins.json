@@ -2,6 +2,7 @@
   "required": true,
   "minVersion": "0.8",
   "package": "top.morenrx.enigmatic_addons_fix.mixin",
+  "plugin": "top.morenrx.enigmatic_addons_fix.mixin.EAFMixinPlugin",
   "compatibilityLevel": "JAVA_17",
   "refmap": "enigmatic_addons_fix.refmap.json",
   "mixins": [
@@ -12,7 +13,8 @@
     "common.MixinAddonEventHandler",
     "common.MixinIchorBottle",
     "common.MixinVoidTome",
-    "common.MixinAbstractBrewingRecipe"
+    "common.MixinAbstractBrewingRecipe",
+    "common.MixinSuperpositionHandler"
   ],
   "client": [
     "client.MixinMerchantOffer",
